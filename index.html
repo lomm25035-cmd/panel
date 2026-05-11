@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KEY PANEL</title>
+
+<style>
+body{
+    margin:0;
+    background:black;
+    color:#00ff9d;
+    font-family:monospace;
+    overflow:hidden;
+    touch-action:none;
+}
+
+/* scan effect */
+body::before{
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:repeating-linear-gradient(
+        0deg,
+        rgba(0,255,157,0.05),
+        rgba(0,255,157,0.05) 1px,
+        transparent 1px,
+        transparent 4px
+    );
+    animation:scan 5s linear infinite;
+}
+
+@keyframes scan{
+    0%{transform:translateY(0)}
+    100%{transform:translateY(60px)}
+}
+
+.box{
+    width:360px;
+    margin:40px auto;
+    border:1px solid #00ff9d;
+    padding:15px;
+    background:rgba(0,0,0,0.85);
+    position:relative;
+    z-index:2;
+}
+
+input,button{
+    width:100%;
+    padding:10px;
+    margin-top:6px;
+    background:black;
+    color:#00ff9d;
+    border:1px solid #00ff9d;
+}
+
+/* glitch */
+h2{
+    animation:glitch 1s infinite;
+}
+
+@keyframes glitch{
+    0%{text-shadow:2px 0 red,-2px 0 blue}
+    50%{text-shadow:-2px 0 red,2px 0 blue}
+    100%{text-shadow:2px 0 red,-2px 0 blue}
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>PANEL CHECK</h2>
+
+<input id="key" placeholder="DUCHUY-XXXX-XXXX-TIMESTAMP">
+<button onclick="check()">CHECK KEY</button>
+
+<p id="res"></p>
+
+</div>
+
+<script>
+
+let db = JSON.parse(localStorage.getItem("key_db") || "[]");
+
+/* CHECK KEY */
+function check(){
+
+let k=document.getElementById("key").value;
+let f=db.find(x=>x.key===k);
+
+if(!f){
+document.getElementById("res").innerText="❌ NOT FOUND";
+return;
+}
+
+if(f.locked){
+document.getElementById("res").innerText="⛔ KEY LOCKED";
+return;
+}
+
+if(Date.now()>f.exp){
+document.getElementById("res").innerText="⛔ EXPIRED";
+return;
+}
+
+document.getElementById("res").innerText="✔ KEY VALID";
+}
+
+</script>
+
+</body>
+</html>
